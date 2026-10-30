@@ -22,6 +22,14 @@ python -m http.server 8000
 
 y abre `http://localhost:8000`.
 
+## Publicar cambios
+
+```bash
+./publicar.sh "Describe el cambio"
+```
+
+Sube la versión `?v=` de los archivos en `index.html`, hace commit y push. GitHub Pages se actualiza en 1-2 minutos.
+
 ## Editar el contenido
 
 | Archivo | Contenido |
