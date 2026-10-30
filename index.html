@@ -1,0 +1,214 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Atlas Godot</title>
+  <meta name="description" content="Guía visual en español de Godot 4: nodos, señales, funciones, recetas para armar personajes y diccionario de términos de desarrollo de juegos.">
+  <link rel="icon" href="https://raw.githubusercontent.com/godotengine/godot/master/editor/icons/Node2D.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Anton&family=Roboto+Condensed:ital,wght@0,300..700;1,400&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css?v=18">
+</head>
+<body>
+  <a class="skip" href="#recetas">Saltar al contenido</a>
+
+  <header class="topbar">
+    <a class="brand" href="#top" aria-label="Atlas Godot, inicio">
+      <span class="brand-mark" aria-hidden="true"></span>
+      <span>Atlas<b>Godot</b></span>
+    </a>
+    <nav class="topnav" aria-label="Secciones">
+      <a href="#recetas">Recetas</a>
+      <a href="#nodos">Nodos</a>
+      <a href="#senales">Señales</a>
+      <a href="#funciones">Funciones</a>
+      <a href="#diccionario">Diccionario</a>
+    </nav>
+    <div class="top-actions">
+      <button class="search-trigger" id="openPalette" type="button" aria-label="Buscar en todo el atlas">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+        <span>Buscar</span><kbd>Ctrl K</kbd>
+      </button>
+      <button class="icon-btn" id="themeToggle" type="button" aria-label="Cambiar tema claro/oscuro">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>
+      </button>
+    </div>
+  </header>
+
+  <main id="top">
+    <!-- HERO -->
+    <section class="hero">
+      <div class="hero-copy">
+        <p class="eyebrow"><span class="dot"></span> Godot 4.3+ · GDScript · en español</p>
+        <h1>Arma juegos<br>nodo a <em>nodo</em></h1>
+        <p class="lede">Un atlas práctico de Godot: qué hace cada nodo, qué señales emite, qué funciones vas a escribir mil veces, recetas de “qué necesito para…” y el vocabulario que usan los devs.</p>
+        <button class="hero-search" id="heroSearch" type="button">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+          <span>Busca “coyote time”, “Area2D”, “body_entered”…</span>
+          <kbd>/</kbd>
+        </button>
+        <dl class="stats" id="stats"></dl>
+      </div>
+
+      <div class="hero-visual" aria-hidden="true">
+        <div class="win win-scene">
+          <div class="win-head"><span>Escena</span><span class="mono">jugador.tscn</span></div>
+          <ul class="tree" id="heroTree"></ul>
+        </div>
+        <div class="win win-view">
+          <div class="win-head"><span>2D</span><span class="mono">▶ F5</span></div>
+          <img src="https://docs.godotengine.org/en/stable/_images/dodge_preview.gif" alt="" loading="eager">
+        </div>
+        <div class="win win-signal">
+          <div class="win-head"><span>Señal</span></div>
+          <code class="mono"><span class="tk-fn">body_entered</span>(body) <span class="arrow">→</span> <span class="tk-k">func</span> _on_moneda()</code>
+        </div>
+      </div>
+    </section>
+
+    <!-- RECETAS -->
+    <section class="block" id="recetas">
+      <header class="block-head">
+        <span class="idx">01</span>
+        <div>
+          <h2>Quiero hacer…</h2>
+          <p>Elige lo que quieres construir y te digo exactamente qué nodos necesitas, en qué orden y con qué script.</p>
+        </div>
+      </header>
+      <div class="recipes">
+        <label class="recipe-select">
+          <span>Elige una receta</span>
+          <select id="recipeSelect"></select>
+        </label>
+        <div class="recipe-tabs" role="tablist" aria-label="Recetas" id="recipeTabs"></div>
+        <article class="recipe" id="recipePanel" role="tabpanel" tabindex="0"></article>
+      </div>
+    </section>
+
+    <!-- NODOS -->
+    <section class="block" id="nodos">
+      <header class="block-head">
+        <span class="idx">02</span>
+        <div>
+          <h2>Nodos</h2>
+          <p>Las piezas con las que se construye todo. El color sigue la convención del editor: azul 2D, rojo 3D, verde interfaz.</p>
+        </div>
+      </header>
+      <div class="toolbar">
+        <div class="chips" id="nodeChips" role="group" aria-label="Filtrar por categoría"></div>
+        <label class="field">
+          <span class="sr-only">Filtrar nodos</span>
+          <input id="nodeFilter" type="search" placeholder="Filtrar nodos…" autocomplete="off">
+        </label>
+      </div>
+      <div class="node-grid" id="nodeGrid"></div>
+    </section>
+
+    <!-- SEÑALES -->
+    <section class="block" id="senales">
+      <header class="block-head">
+        <span class="idx">03</span>
+        <div>
+          <h2>Señales</h2>
+          <p>Una señal es un aviso: “me tocaron”, “se acabó el tiempo”, “me pulsaron”. Otros nodos se conectan y reaccionan sin conocerse entre sí.</p>
+        </div>
+      </header>
+      <div class="signal-intro">
+        <figure class="shot">
+          <img src="https://docs.godotengine.org/en/stable/_images/signals_12_node_connection.webp" alt="Ventana de conexión de señales en el editor de Godot" loading="lazy">
+          <figcaption>Conectar desde el editor: pestaña Nodo → Señales → doble clic. <a href="https://docs.godotengine.org/en/stable/getting_started/step_by_step/signals.html" target="_blank" rel="noopener">docs.godotengine.org</a></figcaption>
+        </figure>
+        <div class="signal-how">
+          <h3>Tres formas de usarlas</h3>
+          <ol class="steps">
+            <li><b>Desde el editor.</b> Selecciona el nodo, pestaña <i>Nodo</i>, doble clic en la señal y elige el script receptor.</li>
+            <li><b>Por código.</b> <code>$Timer.timeout.connect(_on_timeout)</code> dentro de <code>_ready()</code>.</li>
+            <li><b>Señales propias.</b> Declara, emite y deja que otros escuchen.</li>
+          </ol>
+          <div class="code" data-code="signal vida_cambio(nueva: int)\n\nfunc recibir_dano(n: int) -> void:\n    vida -= n\n    vida_cambio.emit(vida)\n\n# En el HUD:\njugador.vida_cambio.connect(func(v): $Barra.value = v)"></div>
+        </div>
+      </div>
+      <div class="toolbar">
+        <label class="field">
+          <span class="sr-only">Filtrar señales</span>
+          <input id="signalFilter" type="search" placeholder="Filtrar señales o nodos…" autocomplete="off">
+        </label>
+      </div>
+      <div class="sig-list" id="signalList"></div>
+    </section>
+
+    <!-- FUNCIONES -->
+    <section class="block" id="funciones">
+      <header class="block-head">
+        <span class="idx">04</span>
+        <div>
+          <h2>Funciones</h2>
+          <p>Primero el ciclo de vida (lo que Godot llama solo), luego las funciones que tú vas a llamar todo el tiempo.</p>
+        </div>
+      </header>
+      <h3 class="sub">Ciclo de vida de un nodo</h3>
+      <ol class="lifecycle" id="lifecycle"></ol>
+      <h3 class="sub">Las que usarás siempre</h3>
+      <div class="toolbar">
+        <div class="chips" id="fnChips" role="group" aria-label="Filtrar funciones por grupo"></div>
+      </div>
+      <div class="fn-grid" id="fnGrid"></div>
+    </section>
+
+    <!-- DICCIONARIO -->
+    <section class="block" id="diccionario">
+      <header class="block-head">
+        <span class="idx">05</span>
+        <div>
+          <h2>Diccionario del dev</h2>
+          <p>La jerga que vas a leer en tutoriales, foros y game jams, explicada sin rodeos.</p>
+        </div>
+      </header>
+      <div class="toolbar">
+        <div class="chips" id="glossChips" role="group" aria-label="Filtrar términos por tema"></div>
+        <label class="field">
+          <span class="sr-only">Buscar término</span>
+          <input id="glossFilter" type="search" placeholder="Buscar término…" autocomplete="off">
+        </label>
+      </div>
+      <nav class="az" id="glossAz" aria-label="Índice alfabético"></nav>
+      <div class="gloss" id="gloss"></div>
+    </section>
+  </main>
+
+  <footer class="foot">
+    <p>Capturas e íconos enlazados desde <a href="https://docs.godotengine.org" target="_blank" rel="noopener">docs.godotengine.org</a> y el <a href="https://github.com/godotengine/godot" target="_blank" rel="noopener">repositorio de Godot</a> (CC BY 3.0 / MIT). Godot es un proyecto de la Godot Foundation; este atlas no es oficial.</p>
+  </footer>
+
+  <!-- Detalle de nodo -->
+  <dialog class="sheet" id="nodeDialog" aria-labelledby="ndTitle">
+    <div class="sheet-inner" id="nodeDialogBody"></div>
+  </dialog>
+
+  <!-- Detalle de propiedad / método / señal (se abre encima del de nodo) -->
+  <dialog class="sheet member-sheet" id="memberDialog" aria-labelledby="mdTitle">
+    <div class="sheet-inner" id="memberDialogBody"></div>
+  </dialog>
+
+  <!-- Paleta de búsqueda -->
+  <dialog class="palette" id="palette" aria-label="Buscar">
+    <div class="palette-box">
+      <label class="palette-input">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+        <span class="sr-only">Buscar</span>
+        <input id="paletteInput" type="search" placeholder="Nodo, señal, función o término…" autocomplete="off" role="combobox" aria-controls="paletteList" aria-expanded="true">
+        <kbd>Esc</kbd>
+      </label>
+      <ul id="paletteList" role="listbox"></ul>
+    </div>
+  </dialog>
+
+  <script src="data.js?v=18"></script>
+  <script src="ideas.js?v=18"></script>
+  <script src="members.js?v=18"></script>
+  <script src="extras.js?v=18"></script>
+  <script src="app.js?v=18"></script>
+</body>
+</html>
